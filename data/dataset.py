@@ -18,16 +18,24 @@ class ImageDataset(Dataset):
                      {'1.0': '1', '': '0', '0.0': '0', '-1.0': '1'}, ]
         with open(label_path) as f:
             header = f.readline().strip('\n').split(',')
-            self._label_header = [
-                header[3],
-                header[6],
-                header[7],
-                header[9],
-                header[11]]
+            if self._mode == 'test':
+                self._label_header = []
+            else:
+                self._label_header = [
+                   header[7],
+                   header[10],
+                   header[11],
+                   header[13],
+                   header[15]]
             for line in f:
                 labels = []
                 fields = line.strip('\n').split(',')
                 image_path = fields[0]
+                if self._mode == 'test':
+                    self._image_paths.append(image_path)
+                    self._labels.append(labels)
+                    continue
+
                 flg_enhance = False
                 for index, value in enumerate(fields[5:]):
                     if index == 5 or index == 8:

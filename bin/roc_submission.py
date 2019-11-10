@@ -19,10 +19,10 @@ parser.add_argument('--pred_csv_path', default='test/test.csv',
 parser.add_argument('--true_csv_path', default='dev.csv',
                     metavar='TRUE_CSV_PATH', type=str,
                     help="Path to the ground truth in csv")
-parser.add_argument('--plot_path', default='test/', metavar='PLOT_PATH',
-                    type=str, help="Path to the ROC plots")
 parser.add_argument('base_name', default=None, metavar='BASE_NAME',
                     type=str, help="Base name of the ROC plots")
+parser.add_argument('--plot_path', default='test/', metavar='PLOT_PATH',
+                    type=str, help="Path to the ROC plots")
 parser.add_argument('--prob_thred', default=0.5, type=float,
                     help="Probability threshold")
 
@@ -31,10 +31,11 @@ def read_csv(csv_path, true_csv=False):
     image_paths = []
     probs = []
     dict_ = [{'1.0': '1', '': '0', '0.0': '0', '-1.0': '0'},
-             {'1.0': '1', '': '0', '0.0': '0', '-1.0': '1'}, ]
+            {'1.0': '1', '': '0', '0.0': '0', '-1.0': '1'}, ]
     with open(csv_path) as f:
         header = f.readline().strip('\n').split(',')
         for line in f:
+            print(line)
             fields = line.strip('\n').split(',')
             image_paths.append(fields[0])
             if true_csv is False:
@@ -94,11 +95,11 @@ def transform_csv_en(input_path, output_path):
 
 
 def run(args):
-    transform_csv_en(args.pred_csv_path, args.plot_path + 'pred_csv_done.csv')
+    # transform_csv_en(args.pred_csv_path, args.plot_path + 'pred_csv_done.csv')
     transform_csv(args.true_csv_path, args.plot_path + 'true_csv_done.csv')
 
     images_pred, probs_pred, header_pred = read_csv(
-        args.plot_path + 'pred_csv_done.csv')
+        args.pred_csv_path)
     images_true, probs_true, header_true = read_csv(
         args.plot_path + 'true_csv_done.csv', True)
 
@@ -107,8 +108,9 @@ def run(args):
 
     # num_labels = len(header_true) - 5
     num_labels = 5
-    header = [header_true[7], header_true[10], header_true[11],
-              header_true[13], header_true[15]]
+    header_true = header_pred
+    header = [header_true[1], header_true[2], header_true[3],
+              header_true[4], header_true[5]]
 
     for i in range(num_labels):
         label = header[i]

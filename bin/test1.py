@@ -103,7 +103,8 @@ def run(args):
     model = DataParallel(model, device_ids=device_ids).to(device).eval()
     ckpt_path = os.path.join(args.model_path, 'best.ckpt')
     ckpt = torch.load(ckpt_path, map_location=device)
-    model.module.load_state_dict(ckpt['state_dict'])
+    # model.module.load_state_dict(ckpt['state_dict'])
+    model.module.load_state_dict(ckpt)
 
     dataloader_test = DataLoader(
         ImageDataset(args.in_csv_path, cfg, mode='test'),
@@ -112,7 +113,8 @@ def run(args):
 
     test_epoch(cfg, args, model, dataloader_test, args.out_csv_path)
 
-    print('Save best is step :', ckpt['step'], 'AUC :', ckpt['auc_dev_best'])
+    # print('Save best is step :', ckpt['step'], 'AUC :', ckpt['auc_dev_best'])
+
 
 
 def main():
